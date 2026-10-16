@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#080b18">
-    <title>Collision 2D</title>
+    <meta name="theme-color" content="#0a0418">
+    <title>Cosmic Catcher · CRASH Edition</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -14,128 +14,162 @@
 <body>
     <!-- Boot Screen -->
     <div id="bootScreen">
-        <div class="boot-title">INICIALIZANDO JUEGO</div>
+        <div class="boot-ornament">✦</div>
+        <div class="boot-title">INVOCANDO EL COSMOS</div>
         <div class="boot-bar-track">
             <div id="bootBar"></div>
         </div>
-        <div class="boot-sub">COLLISION 2D · BUILD 03.0</div>
+        <div class="boot-sub">COSMIC CATCHER · BUILD 05.0</div>
     </div>
+
+    <!-- Flash overlay para efectos de nivel -->
+    <div id="flashOverlay"></div>
 
     <header class="topbar">
         <a class="brand" href="#">
             <img src="favicon.svg" alt="">
-            <span>Collision<span class="slash"></span>2D</span>
+            <span>Cosmic<span class="slash"></span>Catcher</span>
         </a>
-        <div class="top-status"><i></i> MUNDO ACTIVO</div>
+        <div class="top-status"><i></i> COSMOS ACTIVO</div>
     </header>
 
     <main class="container app-shell">
         <section class="hero text-center">
-            <p class="eyebrow">GRAFICACIÓN / SIMULACIÓN INTERACTIVA</p>
-            <h1>Collision <span>GAME</span></h1>
-            <p class="hero-copy">Explora cuatro algoritmos de colisión y observa cómo cambia la dinámica de cada esfera.
+            <p class="eyebrow">GRAFICACIÓN / JUEGO INTERACTIVO</p>
+            <h1>Atrapa las <span>Estrellas</span></h1>
+            <p class="hero-copy">
+                Haz clic sobre las estrellas fugaces y grita ¡CRASH! Cada captura enciende el cosmos.
             </p>
         </section>
 
+        <!-- Barra de combo/rush -->
+        <div class="rush-bar-container" id="rushBarContainer">
+            <div class="rush-bar-label">
+                <span>⚡ ENERGÍA CÓSMICA</span>
+                <span id="rushPct">0%</span>
+            </div>
+            <div class="rush-bar-track">
+                <div id="rushBar"></div>
+            </div>
+        </div>
+
+        <!-- Panel de nivel / contador -->
         <section class="control-panel">
             <div class="panel-heading">
-                <div><span class="tiny-square"></span> CONFIGURACIÓN DE SIMULACIÓN</div>
-                <span class="small-muted">BUILD 03.0</span>
+                <div><span class="tiny-square"></span> PANEL DE CONTROL CÓSMICO</div>
+                <span class="small-muted">BUILD 05.0</span>
             </div>
 
-            <div class="algorithm-grid">
-                <label class="algorithm-card">
-                    <input type="radio" name="algorithm" value="classic" checked>
-                    <span class="radio-mark"></span>
-                    <span class="algo-index">01 / CLÁSICO</span>
-                    <strong>Rebote direccional</strong>
-                    <small>Adaptación del enfoque original: invierte la dirección de las esferas al detectar
-                        contacto.</small>
-                </label>
-                <label class="algorithm-card">
-                    <input type="radio" name="algorithm" value="flash">
-                    <span class="radio-mark"></span>
-                    <span class="algo-index">02 / VISUAL</span>
-                    <strong>Rebote + flash azul</strong>
-                    <small>Invierte las velocidades de ambas esferas y activa un destello azul temporal.</small>
-                </label>
-                <label class="algorithm-card">
-                    <input type="radio" name="algorithm" value="elastic">
-                    <span class="radio-mark"></span>
-                    <span class="algo-index">03 / FÍSICO</span>
-                    <strong>Colisión elástica</strong>
-                    <small>Calcula el impulso entre esferas, considerando masa proporcional al área.</small>
-                </label>
-                <label class="algorithm-card">
-                    <input type="radio" name="algorithm" value="gravity">
-                    <span class="radio-mark"></span>
-                    <span class="algo-index">04 / GRAVEDAD</span>
-                    <strong>Atracción central</strong>
-                    <small>Las esferas son atraídas al centro del lienzo, generando colisiones caóticas.</small>
-                </label>
+            <div class="hud-grid">
+                <div class="hud-card">
+                    <span class="hud-label">ESTRELLAS CAPTURADAS</span>
+                    <span class="hud-value cyan" id="scoreVal">0</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">VELOCIDAD</span>
+                    <span class="hud-value pink" id="speedVal">MEDIA</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">NIVEL</span>
+                    <span class="hud-value lime" id="levelVal">I</span>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-label">COMBO ACTUAL</span>
+                    <span class="hud-value" id="comboVal">x1</span>
+                </div>
+            </div>
+
+            <div class="hud-grid secondary">
+                <div class="hud-card small">
+                    <span class="hud-label">RÉCORD</span>
+                    <span class="hud-value gold" id="bestVal">0</span>
+                </div>
+                <div class="hud-card small">
+                    <span class="hud-label">ACTIVAS</span>
+                    <span class="hud-value" id="activeVal">25</span>
+                </div>
+                <div class="hud-card small">
+                    <span class="hud-label">BONUS CAPTURADOS</span>
+                    <span class="hud-value gold" id="bonusVal">0</span>
+                </div>
+                <div class="hud-card small">
+                    <span class="hud-label">PRECISIÓN</span>
+                    <span class="hud-value" id="accVal">100%</span>
+                </div>
             </div>
 
             <div class="toolbar">
                 <div class="control-hint">
-                    <span class="keycap">SPACE</span> pausar / continuar
+                    <span class="keycap">CLIC IZQ</span> capturar
+                    <span class="hint-sep">·</span>
+                    <span class="keycap">SPACE</span> pausar
                     <span class="hint-sep">·</span>
                     <span class="live-dot"></span>
-                    <span id="modeLabel">REBOTE DIRECCIONAL</span>
+                    <span id="modeLabel">CAÍDA LIBRE + REBOTE</span>
                 </div>
                 <div class="toolbar-buttons">
-                    <button id="trailBtn" class="btn btn-outline-neon">ESTELA ∞</button>
+                    <button id="soundBtn" class="btn btn-outline-neon active">🔊 SONIDO</button>
                     <button id="toggleBtn" class="btn btn-neon">PAUSAR</button>
                     <button id="resetBtn" class="btn btn-outline-neon">REINICIAR</button>
                 </div>
             </div>
         </section>
 
+        <!-- Escenario del juego -->
         <section class="stage-card">
             <div class="stage-top">
-                <span><span class="tiny-square"></span> CAMPO DE PARTÍCULAS</span>
-                <span>ESFERAS <b id="ballTotal">12</b></span>
+                <span><span class="tiny-square"></span> CAMPO ESTELAR</span>
+                <span>OBJETOS <b id="ballTotal">25</b></span>
             </div>
+
             <div class="canvas-frame">
-                <canvas id="canvas" width="1100" height="590"
-                    aria-label="Simulación de colisiones entre círculos"></canvas>
-                <div class="canvas-overlay">COLLISION MONITOR <span>● LIVE FEED</span></div>
+                <div class="ornate-frame">
+                    <canvas id="canvas" width="1100" height="620"
+                        aria-label="Juego de captura de estrellas"></canvas>
+                    <div class="frame-corner tl"></div>
+                    <div class="frame-corner tr"></div>
+                    <div class="frame-corner bl"></div>
+                    <div class="frame-corner br"></div>
+                </div>
+                <div class="canvas-overlay">COSMIC FEED <span>● LIVE</span></div>
             </div>
+
             <div class="stage-bottom">
-                <span>COLISIONES DETECTADAS <b id="collisions">000</b></span>
+                <span>REBOTES <b id="bounces">000</b></span>
                 <span>ESTADO <b id="status">EN EJECUCIÓN</b></span>
                 <span>FPS <b id="fps">60</b></span>
                 <span>RENDER <b>CANVAS 2D</b></span>
             </div>
         </section>
 
+        <!-- Info cards -->
         <section class="info-grid">
             <article class="info-card">
-                <span class="info-symbol cyan">↗</span>
+                <span class="info-symbol cyan">✦</span>
                 <div>
-                    <strong>Detección geométrica</strong>
-                    <p>Se compara la distancia entre centros con la suma de los radios para identificar el contacto.</p>
+                    <strong>Caída libre real</strong>
+                    <p>Cada estrella cae con gravedad propia y rebota con parábola decreciente hasta desvanecerse.</p>
                 </div>
             </article>
             <article class="info-card">
                 <span class="info-symbol pink">✳</span>
                 <div>
-                    <strong>Respuesta visual</strong>
-                    <p>Los impactos generan anillos, partículas y un breve resplandor para hacer visible cada colisión.
-                    </p>
+                    <strong>Captura con clic</strong>
+                    <p>El clic izquierdo detecta la estrella más cercana bajo el cursor y la hace estallar.</p>
                 </div>
             </article>
             <article class="info-card">
-                <span class="info-symbol lime">⌁</span>
+                <span class="info-symbol lime">⚡</span>
                 <div>
-                    <strong>Comparación inmediata</strong>
-                    <p>Cambia de algoritmo durante la simulación para comparar el comportamiento de las esferas.</p>
+                    <strong>Combo + Energía</strong>
+                    <p>Capturas seguidas suben tu combo. Llena la barra de energía y activa el FRENESÍ dorado.</p>
                 </div>
             </article>
         </section>
     </main>
 
     <footer class="footer">
-        <div class="footer-brand"><img src="favicon.svg" alt=""> Collision 2D</div>
+        <div class="footer-brand"><img src="favicon.svg" alt=""> Cosmic Catcher</div>
         <div class="footer-data">
             <span>© <b id="year"></b> Itzel Mendoza Sánchez</span>
             <span>No. de control: 26201715</span>
